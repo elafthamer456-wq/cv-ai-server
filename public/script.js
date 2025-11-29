@@ -9,7 +9,7 @@ async function sendToAI() {
     responseBox.innerText = "Thinking...";
 
     try {
-        const response = await fetch("/api/chat", {
+        const response = await fetch("https://ai-server-ny57.onrender.com", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ prompt: userText })
@@ -29,7 +29,7 @@ async function sendToAI() {
 
 document.getElementById("sendBtn").addEventListener("click", sendToAI);
 document.getElementById("userInput").addEventListener("keypress", e => { 
-    if (e.key === "Enter" && !e.shiftKey) { // Enter sends, Shift+Enter new line
+    if (e.key === "Enter" && !e.shiftKey) { 
         e.preventDefault();
         sendToAI(); 
     }
