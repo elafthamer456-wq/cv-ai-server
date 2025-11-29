@@ -1,42 +1,44 @@
 import express from "express";
 import cors from "cors";
+import bodyParser from "body-parser";
 import fetch from "node-fetch";
 
 const app = express();
+const PORT = process.env.PORT || 3000;
+
 app.use(cors());
-app.use(express.json());
+app.use(bodyParser.json());
+app.use(express.static("public")); // جميع ملفات HTML و JS و CSS هنا
 
-// Replace with your real Groq API key
-const GROQ_API_KEY = process.env.GROQ_API_KEY;
+const API_KEY = process.env.GROQ_API_KEY;
 
-// Serve frontend files
-app.use(express.static("public"));
-
-// Chat endpoint
 app.post("/api/chat", async (req, res) => {
-    const { message } = req.body;
+  const { prompt } = req.body;
+  if (!prompt) return res.status(400).json({ error: "Prompt is required" });
 
-    try {
-        const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${GROQ_API_KEY}`
-            },
-            body: JSON.stringify({
-                model: "llama-3.3-70b-versatile",
-                messages: [{ role: "user", content: message }]
-            })
-        });
+  try {
+    const response = await fetch("https://api.groq.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${API_KEY}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        model: "gpt-4o-mini",
+        messages: [
+          { role: "system", content: "You are a helpful assistant." },
+          { role: "user", content: prompt }
+        ]
+      })
+    });
 
-        const data = await response.json();
-        res.json({ reply: data.choices?.[0]?.message?.content || "No response" });
+    const data = await response.json();
+    const answer = data.choices?.[0]?.message?.content || "No response from AI";
+    res.json({ reply: answer });
 
-    } catch (err) {
-        res.status(500).json({ reply: "Server error: " + err.message });
-    }
+  } catch (err) {
+    res.status(500).json({ error: "Failed to connect to AI API" });
+  }
 });
 
-// Render will set the port
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log("Server running on port " + PORT));
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
