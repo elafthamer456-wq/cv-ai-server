@@ -1,36 +1,44 @@
-async function sendToAI() {
-    const inputField = document.getElementById("userInput");
-    const responseBox = document.getElementById("responseBox");
-    const userText = inputField.value.trim();
-    if (!userText) { 
-        responseBox.innerText = "Please enter a message."; 
-        return; 
-    }
-    responseBox.innerText = "Thinking...";
+const API_URL = "https://cv-ai-server-ny57.onrender.com/api/chat";
 
-    try {
-        const response = await fetch("/api/chat", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ prompt: userText })
-        });
-
-        if (!response.ok) throw new Error(`Server returned ${response.status}`);
-        const data = await response.json();
-        responseBox.innerText = data.reply || "No response from AI";
-
-    } catch (err) {
-        responseBox.innerText = "Error connecting to server: " + err.message;
-        console.error(err);
-    } finally { 
-        inputField.value = ""; 
-    }
+function addMessage(text, sender) {
+    const msgBox = document.getElementById("messages");
+    const div = document.createElement("div");
+    div.classList.add("msg", sender);
+    div.innerText = text;
+    msgBox.appendChild(div);
+    msgBox.scrollTop = msgBox.scrollHeight;
 }
 
-document.getElementById("sendBtn").addEventListener("click", sendToAI);
-document.getElementById("userInput").addEventListener("keypress", e => { 
-    if (e.key === "Enter" && !e.shiftKey) { // Enter sends, Shift+Enter new line
-        e.preventDefault();
-        sendToAI(); 
+async function sendMessage() {
+    const input = document.getElementById("input");
+    const text = input.value.trim();
+    if (!text) return;
+
+    addMessage(text, "user");
+    input.value = "";
+
+    // typing indicator
+    addMessage("AI is typing...", "ai");
+
+    const res = await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: text })
+    });
+
+    const data = await res.json();
+
+    // remove typing indicator
+    const msgs = document.querySelectorAll(".ai");
+    msgs[msgs.length - 1].remove();
+
+    addMessage(data.reply, "ai");
+}
+
+document.getElementById("sendBtn").onclick = sendMessage;
+
+document.getElementById("input").addEventListener("keypress", (e) => {
+    if (e.key === "Enter") {
+        sendMessage();
     }
 });
