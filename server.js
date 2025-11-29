@@ -41,11 +41,9 @@ app.post("/", async (req, res) => {
     const answer = data.choices?.[0]?.message?.content || "No response from AI";
     res.json({ answer });
 
-  } catch (err) {
+  } catch {
     res.status(500).json({ error: "Failed to connect to AI API" });
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
