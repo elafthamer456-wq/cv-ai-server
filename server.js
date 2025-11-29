@@ -8,7 +8,7 @@ const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(bodyParser.json());
-app.use(express.static("public")); // ملفات HTML و JS و CSS هنا
+app.use(express.static("public"));
 
 const API_KEY = process.env.GROQ_API_KEY;
 
@@ -21,19 +21,20 @@ app.post("/api/chat", async (req, res) => {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${API_KEY}`,
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "gpt-4o-mini",
+        model: "llama-3.1-8b-instant", // موديل شغال 100%
         messages: [
           { role: "system", content: "You are a helpful assistant." },
-          { role: "user", content: prompt }
-        ]
-      })
+          { role: "user", content: prompt },
+        ],
+      }),
     });
 
     const data = await response.json();
-    console.log("AI API response:", data); // لتأكيد الرد
+    console.log("AI API response:", data);
+
     const answer = data.choices?.[0]?.message?.content || "No response from AI";
     res.json({ reply: answer });
 
