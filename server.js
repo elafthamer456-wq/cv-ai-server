@@ -17,7 +17,7 @@ app.post("/api/chat", async (req, res) => {
   if (!prompt) return res.status(400).json({ error: "Prompt is required" });
 
   try {
-    const response = await fetch("https://api.groq.com/v1/chat/completions", {
+    const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${API_KEY}`,
