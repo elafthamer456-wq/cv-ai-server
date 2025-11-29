@@ -1,4 +1,5 @@
-const SERVER_URL = "https://ai-server-ny57.onrender.com"; // ضع رابط Render هنا إذا أحببت
+// ضع رابط Render الخاص بسيرفرك هنا
+const SERVER_URL = "https://ai-server-ny57.onrender.com";
 
 async function sendToAI() {
     const inputField = document.getElementById("userInput");
@@ -29,6 +30,7 @@ async function sendToAI() {
     }
 }
 
+// أحداث إرسال الرسالة عند الضغط على زر أو Enter
 document.getElementById("sendBtn").addEventListener("click", sendToAI);
 document.getElementById("userInput").addEventListener("keypress", e => { 
     if (e.key === "Enter" && !e.shiftKey) { 
