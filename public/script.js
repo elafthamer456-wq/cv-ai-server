@@ -1,4 +1,4 @@
-const API_URL = "https://cv-ai-server-ny57.onrender.com/api/chat";
+const API_URL = "https://cv-ai-server-ny57.onrender.com";
 
 function addMessage(text, sender) {
     const msgBox = document.getElementById("messages");
