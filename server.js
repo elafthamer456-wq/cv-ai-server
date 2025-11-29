@@ -8,11 +8,13 @@ const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(bodyParser.json());
-app.use(express.static("public"));
+app.use(express.static("public")); // ملفات HTML و JS و CSS داخل public
 
+// تأكدي من وضع مفتاحك في Environment Variable على Render باسم GROQ_API_KEY
 const API_KEY = process.env.GROQ_API_KEY;
 
-app.post("/", async (req, res) => {
+// المسار الذي يستقبل POST من الصفحة
+app.post("/api/chat", async (req, res) => {
   const { prompt } = req.body;
   if (!prompt) return res.status(400).json({ error: "Prompt is required" });
 
@@ -39,9 +41,9 @@ app.post("/", async (req, res) => {
 
     const data = await response.json();
     const answer = data.choices?.[0]?.message?.content || "No response from AI";
-    res.json({ answer });
+    res.json({ reply: answer });
 
-  } catch {
+  } catch (err) {
     res.status(500).json({ error: "Failed to connect to AI API" });
   }
 });
