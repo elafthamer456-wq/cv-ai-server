@@ -9,7 +9,7 @@ async function sendToAI() {
     responseBox.innerText = "Thinking...";
 
     try {
-        const response = await fetch("https://ai-server-ny57.onrender.com", {
+        const response = await fetch("https://ai-server-ny57.onrender.com/api/chat", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ prompt: userText })
