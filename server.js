@@ -8,7 +8,7 @@ const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(bodyParser.json());
-app.use(express.static("public")); // جميع ملفات HTML و JS و CSS هنا
+app.use(express.static("public")); // ملفات HTML و JS و CSS هنا
 
 const API_KEY = process.env.GROQ_API_KEY;
 
@@ -33,10 +33,12 @@ app.post("/api/chat", async (req, res) => {
     });
 
     const data = await response.json();
+    console.log("AI API response:", data); // لتأكيد الرد
     const answer = data.choices?.[0]?.message?.content || "No response from AI";
     res.json({ reply: answer });
 
   } catch (err) {
+    console.error("Error connecting to AI API:", err);
     res.status(500).json({ error: "Failed to connect to AI API" });
   }
 });

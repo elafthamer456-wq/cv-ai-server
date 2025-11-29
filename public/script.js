@@ -1,3 +1,5 @@
+const SERVER_URL = "https://ai-server-ny57.onrender.com"; // ضع رابط Render هنا إذا أحببت
+
 async function sendToAI() {
     const inputField = document.getElementById("userInput");
     const responseBox = document.getElementById("responseBox");
@@ -9,7 +11,7 @@ async function sendToAI() {
     responseBox.innerText = "Thinking...";
 
     try {
-        const response = await fetch("https://ai-server-ny57.onrender.com/api/chat", {
+        const response = await fetch(`${SERVER_URL}/api/chat`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ prompt: userText })
